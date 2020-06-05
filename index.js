@@ -140,18 +140,16 @@ const renameListItem = function (id) {
   // We need to find the relevant input value
   // based on the CUID of its parent li
   const foundItem = store.items.find(item => item.id === id);
-  foundItem.name = ''; // the value of the text input 
+  let itemValue = $('.shopping-list').find('li', id).find('input', 'shopping-item').val();
+  foundItem.name = itemValue; // the value of the text input 
 };
 
 const handleRenameItemClicked = function () {
 // Like in `handleItemCheckClicked`, 
   // we use event delegation.
   $('.js-shopping-list').on('click', '.js-item-rename', event => {
-    let itemValue = 'This needs to be the value of the input contained within the .js-item-element list item with the data-id that is returned by the const id below' //
     // Get the index of the item in store.items.
     const id = getItemIdFromElement(event.currentTarget);
-    alert(event.currentTarget)
-    alert(id)
     // Rename the item.
     renameListItem(id);
     // Render the updated shopping list.
