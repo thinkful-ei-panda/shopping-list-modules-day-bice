@@ -9,23 +9,25 @@ const store = {
 };
 
 const generateItemElement = function (item) {
-  let itemTitle = `<span class='shopping-item shopping-item__checked'>${item.name}</span>`;
+  let itemTitle = `<input type="text" class="shopping-item shopping-item__checked" name="item-name" value="${item.name}">`;
   if (!item.checked) {
-    itemTitle = `
-     <span class='shopping-item'>${item.name}</span>
-    `;
+    //<span class='shopping-item'>${item.name}</span> //original code for itemTitle
+    itemTitle = `<input type="text" class="shopping-item" name="item-name" value="${item.name}">`;
   }
 
   return `
     <li class='js-item-element' data-item-id='${item.id}'>
       ${itemTitle}
       <div class='shopping-item-controls'>
-        <button class='shopping-item-toggle js-item-toggle'>
-          <span class='button-label'>check</span>
-        </button>
-        <button class='shopping-item-delete js-item-delete'>
-          <span class='button-label'>delete</span>
-        </button>
+      <button class='shopping-item-toggle js-item-toggle'>
+        <span class='button-label'>check</span>
+      </button>
+      <button class='shopping-item-rename js-item-rename'>
+        <span class='button-label'>rename</span>
+      </button>
+      <button class='shopping-item-delete js-item-delete'>
+        <span class='button-label'>delete</span>
+      </button>
       </div>
     </li>`;
 };
@@ -127,6 +129,36 @@ const handleDeleteItemClicked = function () {
   });
 };
 
+/*
+* User can edit the title of an item.
+*/
+const renameListItem = function (id) {
+  // As with 'addItemToShoppingLIst', this 
+  // function also has the side effect of
+  // mutating the global store value.
+  //
+  // We need to find the relevant input value
+  // based on the CUID of its parent li
+  const foundItem = store.items.find(item => item.id === id);
+  foundItem.name = ''; // the value of the text input 
+};
+
+const handleRenameItemClicked = function () {
+// Like in `handleItemCheckClicked`, 
+  // we use event delegation.
+  $('.js-shopping-list').on('click', '.js-item-rename', event => {
+    let itemValue = 'This needs to be the value of the input contained within the .js-item-element list item with the data-id that is returned by the const id below' //
+    // Get the index of the item in store.items.
+    const id = getItemIdFromElement(event.currentTarget);
+    alert(event.currentTarget)
+    alert(id)
+    // Rename the item.
+    renameListItem(id);
+    // Render the updated shopping list.
+    render();
+  });
+};
+
 /**
  * Toggles the store.hideCheckedItems property
  */
@@ -158,6 +190,7 @@ const handleShoppingList = function () {
   render();
   handleNewItemSubmit();
   handleItemCheckClicked();
+  handleRenameItemClicked();
   handleDeleteItemClicked();
   handleToggleFilterClick();
 };
